@@ -1,0 +1,20 @@
+openai>=1.51.0
+pandas>=2.2
+numpy>=1.26
+datasets>=3.0
+sacrebleu>=2.4
+rouge-score>=0.1.2
+matplotlib>=3.8
+tqdm>=4.66
+typer>=0.12
+pyyaml>=6.0
+tenacity>=8.3
+python-dotenv>=1.0
+# 日本語の精密トークナイズ（任意）
+fugashi>=1.3.0
+unidic-lite>=1.0.8
+# 代替/追加のトークナイザ（環境によりいずれかをインストールしてください）
+janome>=0.4.2
+sudachipy>=0.6.0
+# sudachipy を利用する場合は辞書も必要です（例: sudachidict_core）
+sudachidict_core>=20210802
