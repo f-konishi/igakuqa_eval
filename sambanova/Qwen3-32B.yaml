@@ -1,0 +1,37 @@
+run_name: "sambanova"
+
+dataset:
+  # "hf" (Hugging Face) または "jsonl"（ローカル）
+  source: "hf"
+  hf_name: "japan-ai-official/igakuqa-subset-curated"
+  split: "train"  # データセットに合わせて変更
+  path: ""        # source=jsonl のとき使用するローカル JSONL ファイル
+  text_only: true  # 画像問題を含む場合は false
+  limit: null      # 件数制限（デバッグ用）
+
+openai:
+  model: "Qwen3-32B"         # 任意のデプロイ名 / モデル名
+  api_key_env: "SAMBANOVA_API_KEY"
+  base_url_env: "SAMBANOVA_BASE_URL"  # 例: Azure/HCP Gateway 等。未設定なら公式既定
+  timeout_s: 60
+  max_retries: 2
+  temperature: 0.0
+  seed: 42
+  # max_tokens: 8000
+
+prompt:
+  mode: "auto" # auto / mc / free
+  system: |
+    あなたは日本語の医学に精通した臨床医です。根拠は簡潔に述べ、最終回答は明確に出してください。
+
+evaluation:
+  compute_bleu: true
+  compute_rougeL: true
+  skip_image_questions: true
+  save_prompts: false
+
+io:
+  out_dir: "runs"
+  save_jsonl: true
+  save_csv: true
+  save_plots: true
