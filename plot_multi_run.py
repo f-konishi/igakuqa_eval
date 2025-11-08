@@ -90,6 +90,16 @@ def plot_latency(model2dfs, out_dir, log_scale=True, run_name=None):
         df["latency_ms"].dropna().astype(float)
         for df in model2dfs.values() if "latency_ms" in df and df["latency_ms"].notna().any()
     ], ignore_index=True)
+    
+    # 各モデルのtoken/sec計算
+    def calculate_tokens_per_sec(df):
+        if "total_tokens" not in df or "latency_ms" not in df:
+            return None
+        valid_rows = df[["total_tokens", "latency_ms"]].dropna()
+        if valid_rows.empty:
+            return None
+        tokens_per_sec = (valid_rows["total_tokens"] / valid_rows["latency_ms"] * 1000)
+        return tokens_per_sec.mean()
     if all_lat.empty:
         return
     x_min, x_max = all_lat.min(), all_lat.max()
@@ -112,9 +122,13 @@ def plot_latency(model2dfs, out_dir, log_scale=True, run_name=None):
         df = model2dfs[model]
         data = df["latency_ms"].dropna().astype(float)
         color = f"C{idx}"
-        # データ数（N）と合計レイテンシをタイトルの下、右寄せで表示
+        # データ数（N）、合計レイテンシ、token/secをタイトルの下、右寄せで表示
         total_latency = data.sum()
-        ax.text(0.98, 0.90, f"N = {len(data)}\nTotal = {total_latency/1000:.1f}s", transform=ax.transAxes,
+        tokens_per_sec = calculate_tokens_per_sec(df)
+        info_text = f"N = {len(data)}\nTotal = {total_latency/1000:.1f}s"
+        if tokens_per_sec is not None:
+            info_text += f"\n{tokens_per_sec:.1f} tokens/sec"
+        ax.text(0.98, 0.90, info_text, transform=ax.transAxes,
                 va='top', ha='right', fontsize=9, alpha=0.8)
 
         # ヒストグラム（棒）を描画
