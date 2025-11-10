@@ -11,6 +11,13 @@ RUNS_DIR = "runs"
 RESULTS_FILE = "results.jsonl"
 
 # === ユーティリティ ===
+def get_output_filename(base_name, run_name=None):
+    """
+    出力ファイル名を生成する。run_nameが指定された場合は先頭に付加する。
+    """
+    if run_name:
+        return f"{run_name}_{base_name}.png"
+    return f"{base_name}.png"
 def load_results_by_run(run_name):
     """
     指定run_nameの全サブディレクトリからresults.jsonlを読み込み、
@@ -79,7 +86,7 @@ def plot_scores(model2dfs, out_dir, run_name=None):
         row, col = divmod(idx, ncols)
         axes[row][col].axis('off')
     plt.tight_layout()
-    plt.savefig(os.path.join(out_dir, "scores_subplots.png"))
+    plt.savefig(os.path.join(out_dir, get_output_filename("scores_subplots", run_name)))
     plt.close()
 
 def plot_latency(model2dfs, out_dir, log_scale=True, run_name=None):
@@ -182,7 +189,7 @@ def plot_latency(model2dfs, out_dir, log_scale=True, run_name=None):
         row, col = divmod(idx, ncols)
         axes[row][col].axis('off')
     plt.tight_layout()
-    plt.savefig(os.path.join(out_dir, "latency_hist_subplots.png"))
+    plt.savefig(os.path.join(out_dir, get_output_filename("latency_hist_subplots", run_name)))
     plt.close()
 
 if __name__ == "__main__":
